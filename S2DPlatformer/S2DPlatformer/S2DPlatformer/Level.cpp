@@ -111,51 +111,61 @@ int Level::GetHeight()
 void Level::LoadTiles(int levelIndex)
 {
 	// Load the level and ensure all of the lines are the same length.
-    int width;
-    vector<string>* lines = new vector<string>();
-	fstream stream;
-	stringstream ss;
-	ss << "Content/Levels/" << levelIndex << ".txt";
-	stream.open(ss.str(), fstream::in);
+ //   int width;
+ //   vector<string>* lines = new vector<string>();
+	//fstream stream;
+	//stringstream ss;
+	//ss << "Content/Levels/" << levelIndex << ".txt";
+	//stream.open(ss.str(), fstream::in);
 
-	char* line = new char[256];
-	stream.getline(line, 256);
-	string* sline = new string(line);
-    width = sline->size();
-	while (!stream.eof())
-    {
-        lines->push_back(*sline);
-        if (sline->size() != width)
-			cout << "Bad Level Load\n";
-        stream.getline(line, 256);
-		delete sline;
-		sline = new string(line);
+	//char* line = new char[256];
+	//stream.getline(line, 256);
+	//string* sline = new string(line);
+ //   width = sline->size();
+	//while (!stream.eof())
+ //   {
+ //       lines->push_back(*sline);
+ //       if (sline->size() != width)
+	//		cout << "Bad Level Load\n";
+ //       stream.getline(line, 256);
+	//	delete sline;
+	//	sline = new string(line);
+	//}
+
+	//delete [] line;
+	//delete sline;
+
+	// Allocate the tile grid.
+
+	vector<string>* lines = new vector<string>();
+	stringstream levelStream(".................... .................... .................... .................... .................... .................... .................... .................... .................... .................... .................... .................... .................... ..1..............X.. ####################");
+	string segment;
+
+	while (std::getline(levelStream, segment, ' '))
+	{
+		lines->push_back(segment);
 	}
 
-	delete [] line;
-	delete sline;
+	_tiles = new vector<vector<Tile*>>(20, vector<Tile*>(lines->size()));
 
-    // Allocate the tile grid.
-	_tiles = new vector<vector<Tile*>>(width, vector<Tile*>(lines->size()));
-
-    // Loop over every tile position,
-    for (int y = 0; y < GetHeight(); ++y)
-    {
-        for (int x = 0; x < GetWidth(); ++x)
-        {
-            // to load each tile.
-            char tileType = lines->at(y)[x];
-            (*_tiles)[x][y] = LoadTile(tileType, x, y);
-        }
-    }
+	//Loop over every tile position,
+	for (int y = 0; y < GetHeight(); ++y)
+	{
+		for (int x = 0; x < GetWidth(); ++x)
+		{
+			// to load each tile.
+			char tileType = lines->at(y)[x];
+			(*_tiles)[x][y] = LoadTile(tileType, x, y);
+		}
+	}
 
 	delete lines;
 
-    // Verify that the level has a beginning and an end.
-    if (_player == nullptr)
-        cout << "A level must have a starting point.";
-    if (_exit == InvalidPosition)
-        cout << "A level must have an exit.";
+	// Verify that the level has a beginning and an end.
+	if (_player == nullptr)
+		cout << "A level must have a starting point.";
+	if (_exit == InvalidPosition)
+		cout << "A level must have an exit.";
 }
 
 Tile* Level::LoadTile(const char tileType, int x, int y)
