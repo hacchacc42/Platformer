@@ -25,9 +25,9 @@ Level::Level(int levelIndex)
 
 	// Load background layer textures. For now, all levels must
 	// use the same backgrounds and only use the left-most part of them.
-	_layers = new vector<Texture2D*>(5);
+	_layers = new vector<Texture2D*>(3);
 	stringstream s;
-	for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 3; ++i)
 	{
 		// Choose a random segment if each background layer for level variety.
 		s << "Content/Backgrounds/Layer" << i << "_" << levelIndex << ".png";

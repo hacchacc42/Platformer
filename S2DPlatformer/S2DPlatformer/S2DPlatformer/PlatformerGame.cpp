@@ -3,14 +3,13 @@
 #include <sstream>
 
 int PlatformerGame::TotalTime = 0;
-int levels = 3;
 const int PlatformerGame::WarningTime = 30000;
-const int PlatformerGame::NumberOfLevels = levels;
+const int PlatformerGame::NumberOfLevels = 3;
 
 PlatformerGame::PlatformerGame(int argc, char* argv[]) : Game(argc, argv), _levelIndex(-1), _level(nullptr)
 {
 	Audio::Initialise(); //Loads slow - so do it frist
-	Graphics::Initialise(argc, argv, this, 1280, 720, false, 30, 30, "Platformer", 60);
+	Graphics::Initialise(argc, argv, this, 800, 480, false, 25, 25, "Platformer", 60);
 	Input::Initialise(); //Must be initialised after Graphics Initialisation
 	Graphics::StartGameLoop();
 }
