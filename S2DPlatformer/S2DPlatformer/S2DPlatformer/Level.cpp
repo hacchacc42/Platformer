@@ -111,8 +111,8 @@ int Level::GetHeight()
 void Level::LoadTiles(int levelIndex)
 {
 	// Load the level and ensure all of the lines are the same length.
- //   int width;
- //   vector<string>* lines = new vector<string>();
+	//int width;
+	//vector<string>* lines = new vector<string>();
 	//fstream stream;
 	//stringstream ss;
 	//ss << "Content/Levels/" << levelIndex << ".txt";
@@ -121,9 +121,9 @@ void Level::LoadTiles(int levelIndex)
 	//char* line = new char[256];
 	//stream.getline(line, 256);
 	//string* sline = new string(line);
- //   width = sline->size();
+	//width = sline->size();
 	//while (!stream.eof())
- //   {
+	//{
  //       lines->push_back(*sline);
  //       if (sline->size() != width)
 	//		cout << "Bad Level Load\n";
@@ -154,7 +154,7 @@ void Level::LoadTiles(int levelIndex)
 		for (int x = 0; x < GetWidth(); ++x)
 		{
 			// to load each tile.
-			char tileType = lines->at(y)[x];
+			char tileType = lines->at(y)[x] == 'X' || lines->at(y)[x] == '1' || lines->at(y)[x] == '#' ? lines->at(y)[x] : 'G';
 			(*_tiles)[x][y] = LoadTile(tileType, x, y);
 		}
 	}
