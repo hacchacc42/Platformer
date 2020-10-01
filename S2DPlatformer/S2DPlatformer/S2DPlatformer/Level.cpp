@@ -137,66 +137,118 @@ void Level::LoadTiles(int levelIndex)
 	//delete sline;
 
 	// Allocate the tile grid.
-	// Random Tile Generator
-	srand(time(NULL));
-	int x;
-		char map[15][20];
-		bool player = false;
-		bool exit = false;
-		for (int i = 0; i < 20; i++) {
-			map[14][i] = *"#";
-		}
-		for (int i = 13; i >= 1; i--) {
-			map[i][0] = *"#";
-			for (int j = 1; j < 19; j++) {
-				x = rand() % 40 + 1;
-				if (x == 1 && !player && i > 8) {
-					map[i][j] = *"1";
-					player = true;
-				}
-				else if (x == 2 && !exit && player && i <= 8) {
-					map[i][j] = *"X";
-					map[i + 1][j] = *"-";
-					exit = true;
-				}
-				else {
-					if (i % 3 == 0 && x % 4 == 0) {
-						map[i][j] = *"-";
-					}
-					else {
-						map[i][j] = *".";
-					}
-				}
-			}
-			map[i][19] = *"#";
-		}
-		for (int i = 0; i < 20; i++) {
-			map[0][i] = *"#";
-		}
-		if (!exit) {
-			map[2][17] = *"X";
-			map[3][17] = *"-";
-		}
-		else {
-			map[2][17] = *".";
-		}
-		if (!player) {
-			map[13][3] = *"1";
-		}
+
+
 	vector<string>* lines = new vector<string>();
-	stringstream levelStream;
-	string segment;
-	for (int i = 0; i < 15; i++) {
-		for (int j = 0; j < 20; j++) {
-			levelStream << map[i][j];
-		}
-		levelStream << " ";
-	}
-//END OF RANDOM TILE
-	while (std::getline(levelStream, segment, ' '))
+
+#pragma region PetreRandGen
+	//srand(time(NULL));
+	//int x;
+	//	char map[15][20];
+	//	bool player = false;
+	//	bool exit = false;
+	//	for (int i = 0; i < 20; i++) {
+	//		map[14][i] = *"#";
+	//	}
+	//	for (int i = 13; i >= 1; i--) {
+	//		map[i][0] = *"#";
+	//		for (int j = 1; j < 19; j++) {
+	//			x = rand() % 40 + 1;
+	//			if (x == 1 && !player && i > 8) {
+	//				map[i][j] = *"1";
+	//				player = true;
+	//			}
+	//			else if (x == 2 && !exit && player && i <= 8) {
+	//				map[i][j] = *"X";
+	//				map[i + 1][j] = *"-";
+	//				exit = true;
+	//			}
+	//			else {
+	//				if (i % 3 == 0 && x % 4 == 0) {
+	//					map[i][j] = *"-";
+	//				}
+	//				else {
+	//					map[i][j] = *".";
+	//				}
+	//			}
+	//		}
+	//		map[i][19] = *"#";
+	//	}
+	//	for (int i = 0; i < 20; i++) {
+	//		map[0][i] = *"#";
+	//	}
+	//	if (!exit) {
+	//		map[2][17] = *"X";
+	//		map[3][17] = *"-";
+	//	}
+	//	else {
+	//		map[2][17] = *".";
+	//	}
+	//	if (!player) {
+	//		map[13][3] = *"1";
+	//	}
+	//for (int i = 0; i < 15; i++) {
+	//	for (int j = 0; j < 20; j++) {
+	//		levelStream << map[i][j];
+	//	}
+	//	levelStream << " ";
+	//}
+#pragma endregion PetreRandGen
+
+#pragma region Rework
+
+	char map[15][20];
+	
+	srand(time(NULL));
+	int playerSpawnCol = rand() % 13;
+	int playerSpawnRow = rand() % 19;
+	int exitSpawnCol = rand() % 13;
+	int exitSpawnRow = rand() % 19;
+
+	cout << playerSpawnCol << endl;
+
+	for (int col = 14; col >= 0; col--) 
 	{
-		lines->push_back(segment);
+		for (int row = 0; row < 20; row++) 
+		{
+			if (map[col][row] == '.')
+			{
+				
+			}
+			else if (col == 14) 
+			{
+				map[col][row] = '#';
+			}
+			else if (col == playerSpawnCol && row == playerSpawnRow) // spawn player
+			{
+				map[col][row] = '1';
+				map[col + 1][row] = '-';
+				map[col - 1][row] = '.';
+			}
+			else if (col == exitSpawnCol && row == exitSpawnRow) // spawn exit
+			{
+				map[col][row] = 'X';
+				map[col + 1][row] = '-';
+				map[col - 1][row] = '.';
+			}
+			else if (col % 3 == 2 && rand() % 100 > 40) 
+			{
+				map[col][row] = '-';
+			}
+			else { map[col][row] = '.'; }
+		}
 	}
+
+	for (int col = 0; col < 15; col++)
+	{
+		string column;
+		for (int row = 0; row < 20; row++)
+		{
+			column += map[col][row];
+		}
+		lines->push_back(column);
+	}
+#pragma endregion Rework
 
 	_tiles = new vector<vector<Tile*>>(20, vector<Tile*>(lines->size()));
 
@@ -206,7 +258,7 @@ void Level::LoadTiles(int levelIndex)
 		for (int x = 0; x < GetWidth(); ++x)
 		{
 			// to load each tile.
-			char tileType = lines->at(y)[x] == 'X' || lines->at(y)[x] == '1' || lines->at(y)[x] == '#' || lines->at(y)[x] == '-' ? lines->at(y)[x] : '.';
+			char tileType = lines->at(y)[x];
 			(*_tiles)[x][y] = LoadTile(tileType, x, y);
 		}
 	}
